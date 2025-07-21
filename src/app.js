@@ -2,10 +2,13 @@ const express = require('express')
 const morgan = require('morgan')
 //routers
 const userRoutes = require('./routes/userRouter');
-const authRoutes = require('./routes/authRouter');
+const authRoutes = require('./routes/authRouter.js');
 const categoryRoutes = require('./routes/categoryRouter');
 const productRoutes = require('./routes/productRouter');
 const brandRoutes = require('./routes/brandRouter');
+const cartRoutes = require('./routes/cartRouter')
+
+const { errorHandler } = require('./middlewares/errorHandle');
 
 //db
 const { connectDB } = require('./config/database');
@@ -19,19 +22,23 @@ require('dotenv').config();
 connectDB();
 
 //HTTP logger
-app.use(morgan('combined'));
+app.use(morgan('combined','dev'));
 
 // Middleware để xử lý body request
 app.use(express.json());
 
 // Routers API 
+app.use('/shop/auth', authRoutes);  
+
 app.use('/shop', userRoutes);
-app.use('/shop/auth', authRoutes);
 app.use('/shop', categoryRoutes);
 app.use('/shop', productRoutes);
 app.use('/shop', brandRoutes);
+app.use('/shop', cartRoutes)
 
-// Listen PORT run
-app.listen(process.env.HOST, () => {
-  console.log(`Server run port: ${process.env.HOST}`);
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 3000; 
+app.listen(PORT, () => {
+  console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });

@@ -19,7 +19,7 @@ const getListCategorys = async (req, res) => {
         const { name } = req.query;
         let query = {};
         if (name) {
-            query.name = { $regex: name, $options: 'i' };
+            query. name = { $regex: name, $options: 'i' };
         }
         const category = await CategoryModal.find(query);
         res.status(200).json(category);

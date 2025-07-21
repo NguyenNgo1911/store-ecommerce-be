@@ -3,8 +3,8 @@ const UserModal = require('../models/userModel');
 // Tạo người dùng mới
 const createUser = async (req, res) => {
     try {
-        const { name, description ,age, avatar } = req.body;
-        const newUser = new UserModal({ name, description, age, avatar });
+        const { email, password ,name, description, age, avatar } = req.body;
+        const newUser = new UserModal({ email, password, name, description, age, avatar });
         await newUser.save();
         res.status(200).json(newUser);
     } catch (error) {
@@ -23,7 +23,7 @@ const getAllUsers = async (req, res) => {
             query.name = { $regex: name, $options: 'i' };
         }
 
-        const users = await UserModal.find(query);
+        const users = await UserModal.find(query).select("-password");
         res.status(200).json(users);
     } catch (error) {
         return res.status(500).json({ message: "Đã có lỗi từ hệ thống" });
@@ -37,7 +37,7 @@ const getUserById = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại" });
         }
-        res.status(200).json(user);
+        res.status(200).json(user).select("-password");;
     } catch (error) {
         return res.status(500).json({ message: "Đã có lỗi từ hệ thống" });
     }
@@ -50,7 +50,7 @@ const updateUser = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại" });
         }
-        res.status(200).json(user);
+        res.status(200).json(user).select("-password");;
     } catch (error) {
         return res.status(500).json({ message: "Đã có lỗi từ hệ thống" });
     }
